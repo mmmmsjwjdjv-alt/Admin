@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ADMIN PANEL</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #070a12;
+            --card-bg: rgba(19, 27, 46, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #06b6d4;
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
+        }
+
+        .navbar {
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-brand {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .hamburger-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn:hover {
+            background: var(--primary);
+            color: #000;
+            transform: rotate(90deg);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 15px auto;
+            padding: 0 12px;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sync-card {
+            background: rgba(19, 27, 46, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+            animation: pulseGlow 4s infinite;
+        }
+
+        .sync-info { display: flex; align-items: center; gap: 12px; }
+        .sync-info i { font-size: 1.6rem; color: var(--primary); transition: transform 0.5s ease; }
+        .sync-card:hover .sync-info i { transform: rotate(180deg); }
+
+        .btn-sync {
+            background: linear-gradient(135deg, var(--primary), #0891b2);
+            color: #000;
+            font-weight: 800;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-sync:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-glow); }
+        @media(min-width: 600px) { .btn-sync { width: auto; } }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.2); }
+        .stat-card span { display: block; font-size: 0.75rem; color: var(--text-muted); }
+        .stat-card h3 { font-size: 1.3rem; margin-top: 3px; font-weight: 800; }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            width: 100%;
+        }
+
+        @media(min-width: 850px) {
+            .workspace { grid-template-columns: 320px 1fr; }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 18px;
+            width: 100%;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+        }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 5px; }
+
+        input, select {
+            width: 100%;
+            background: rgba(8, 12, 20, 0.8);
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.88rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #0891b2);
+            color: #000;
+            font-weight: 800;
+            padding: 11px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 15px var(--primary-glow); }
+
+        .search-box { position: relative; margin-bottom: 14px; }
+        .search-box input { padding-right: 35px; }
+        .search-box i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            display: none;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; font-size: 0.82rem; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+        th { background: rgba(8, 12, 20, 0.9); color: var(--text-muted); }
+
+        .mobile-cards-container { display: flex; flex-direction: column; gap: 12px; }
+
+        .user-card {
+            background: rgba(8, 12, 20, 0.7);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .user-card.disabled-user { opacity: 0.5; filter: grayscale(80%); }
+        .user-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; }
+        .user-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; color: var(--text-muted); font-size: 0.78rem; }
+        .user-card-body span b { color: #fff; }
+
+        .user-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 8px;
+        }
+
+        @media(min-width: 650px) {
+            .table-responsive { display: block; }
+            .mobile-cards-container { display: none; }
+        }
+
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        .badge-active { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge-expired { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-disabled { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+
+        .btn-tbl {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-tbl:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        /* مدال فخیم ویرایش حرفه‌ای */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-card {
+            background: #0d1322;
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--primary-glow);
+            border-radius: 20px;
+            padding: 22px;
+            width: 100%;
+            max-width: 440px;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card { transform: scale(1); }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .close-btn { background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+
+        .edit-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .edit-current {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed var(--card-border);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            width: 45%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .edit-arrow { color: var(--primary); font-weight: bold; }
+        .edit-input { width: 50%; }
+
+        .toast-container { position: fixed; top: 15px; left: 15px; right: 15px; z-index: 2000; pointer-events: none; }
+        @media(min-width: 500px) { .toast-container { right: auto; width: 320px; } }
+
+        .toast {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 4px solid var(--primary);
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            color: #fff;
+            font-size: 0.85rem;
+            pointer-events: auto;
+            animation: fadeInDown 0.3s ease;
+        }
+        .toast-success { border-color: var(--success); }
+        .toast-danger { border-color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-server"></i> ADMIN PANEL
+        </div>
+        <button class="hamburger-btn" onclick="openSettingsModal()">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+    </nav>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color:var(--primary); font-size: 1rem;"><i class="fa-solid fa-sliders"></i> تنظیمات اتصال</h3>
+                <button class="close-btn" id="modalCloseBtn" onclick="closeSettingsModal()" style="display:none;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">اطلاعات مخزن گیت‌هاب را وارد کنید.</p>
+            <div class="form-group">
+                <label>GitHub Token:</label>
+                <input type="password" id="ghToken" placeholder="ghp_...">
+            </div>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="ghUser" value="savix-666">
+            </div>
+            <div class="form-group">
+                <label>Repository:</label>
+                <input type="text" id="ghRepo" value="SAVIX-USER">
+            </div>
+            <div class="form-group">
+                <label>File Path:</label>
+                <input type="text" id="ghPath" value="SAVIX-USER">
+            </div>
+            <button class="btn-main" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> ذخیره تنظیمات</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="color:var(--primary); font-size: 1rem;"><i class="fa-solid fa-user-pen"></i> ویرایش اطلاعات کاربر</h3>
+                <button class="close-btn" onclick="closeEditModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">هر فیلدی که خالی بماند تغییر نمی‌کند.</p>
+            
+            <input type="hidden" id="editKeyOriginal">
+
+            <label style="font-size: 0.75rem; color: var(--text-muted);">نام / کلید (User Key):</label>
+            <div class="edit-row">
+                <div class="edit-current" id="currUserKey">-</div>
+                <div class="edit-arrow">←</div>
+                <input type="text" id="newUserKey" class="edit-input" placeholder="بدون تغییر">
+            </div>
+
+            <label style="font-size: 0.75rem; color: var(--text-muted);">تمدید لایسنس (تعداد روز):</label>
+            <div class="edit-row">
+                <div class="edit-current" id="currDaysLeft">-</div>
+                <div class="edit-arrow">←</div>
+                <input type="number" id="newDaysCount" class="edit-input" placeholder="بدون تغییر">
+            </div>
+
+            <label style="font-size: 0.75rem; color: var(--text-muted);">دسترسی آفلاین:</label>
+            <div class="edit-row">
+                <div class="edit-current" id="currAllowOffline">-</div>
+                <div class="edit-arrow">←</div>
+                <select id="newAllowOffline" class="edit-input">
+                    <option value="">بدون تغییر</option>
+                    <option value="true">بله (True)</option>
+                    <option value="false">خیر (False)</option>
+                </select>
+            </div>
+
+            <button class="btn-main" onclick="saveEditDialog()"><i class="fa-solid fa-check"></i> تایید تغییرات</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sync-card">
+            <div class="sync-info">
+                <i class="fa-solid fa-rotate"></i>
+                <div>
+                    <h4 style="font-size: 0.95rem;">همگام‌سازی دیتابیس</h4>
+                    <p style="font-size:0.75rem; color:var(--text-muted);">آپدیت آنلاین دیتابیس کاربران</p>
+                </div>
+            </div>
+            <button class="btn-sync" onclick="fetchUsers()"><i class="fa-solid fa-cloud-arrow-down"></i> همگام‌سازی اطلاعات</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>کل کاربران</span>
+                <h3 id="statTotal">0</h3>
+            </div>
+            <div class="stat-card">
+                <span>فعال</span>
+                <h3 id="statActive" style="color:var(--success);">0</h3>
+            </div>
+            <div class="stat-card">
+                <span>غیرفعال/منقضی</span>
+                <h3 id="statExpired" style="color:var(--warning);">0</h3>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="panel">
+                <h3 class="panel-title"><i class="fa-solid fa-user-plus"></i> افزودن کاربر جدید</h3>
+                
+                <div class="form-group">
+                    <label>شناسه دستگاه (Device ID):</label>
+                    <input type="text" id="deviceId" placeholder="device_101">
+                </div>
+                <div class="form-group">
+                    <label>نام کاربر (Key):</label>
+                    <input type="text" id="userKey" placeholder="Mahan">
+                </div>
+                <div class="form-group">
+                    <label>تعداد روز لایسنس:</label>
+                    <input type="number" id="daysCount" placeholder="30" min="1">
+                </div>
+                <div class="form-group">
+                    <label>دسترسی آفلاین:</label>
+                    <select id="allowOffline">
+                        <option value="true">بله (True)</option>
+                        <option value="false">خیر (False)</option>
+                    </select>
+                </div>
+                
+                <button class="btn-main" onclick="saveUser()"><i class="fa-solid fa-check"></i> ذخیره کاربر</button>
+            </div>
+
+            <div class="panel">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="جستجو نام یا دستگاه...">
+                </div>
+
+                <div id="loading" style="display:none; text-align:center; padding: 15px; color:var(--primary); font-size:0.9rem;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> در حال دریافت اطلاعات...
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Key</th>
+                                <th>تاریخ انقضا</th>
+                                <th>دسترسی آفلاین</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="mobile-cards-container" id="userCardsBody"></div>
+            </div>
+        </div>
+    </div>
+        <script>
+        let currentSha = "";
+        let usersList = [];
+        let disabledUsersList = JSON.parse(localStorage.getItem('disabled_users') || '[]');
+
+        window.onload = function() {
+            const savedToken = localStorage.getItem('savix_token');
+            const savedUser = localStorage.getItem('savix_user');
+            const savedRepo = localStorage.getItem('savix_repo');
+            const savedPath = localStorage.getItem('savix_path');
+
+            if (savedToken) document.getElementById('ghToken').value = savedToken;
+            if (savedUser) document.getElementById('ghUser').value = savedUser;
+            if (savedRepo) document.getElementById('ghRepo').value = savedRepo;
+            if (savedPath) document.getElementById('ghPath').value = savedPath;
+
+            if (!savedToken) {
+                openSettingsModal(false);
+            } else {
+                document.getElementById('modalCloseBtn').style.display = 'block';
+                fetchUsers(true);
+            }
+        };
+
+        function openSettingsModal(allowClose = true) {
+            document.getElementById('modalCloseBtn').style.display = allowClose ? 'block' : 'none';
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function saveSettings() {
+            const token = document.getElementById('ghToken').value.trim();
+            const user = document.getElementById('ghUser').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const path = document.getElementById('ghPath').value.trim();
+
+            if (!token) return showToast('توکن را وارد کنید.', 'danger');
+
+            localStorage.setItem('savix_token', token);
+            localStorage.setItem('savix_user', user);
+            localStorage.setItem('savix_repo', repo);
+            localStorage.setItem('savix_path', path);
+
+            closeSettingsModal();
+            document.getElementById('modalCloseBtn').style.display = 'block';
+            showToast('تنظیمات ذخیره شد', 'success');
+            fetchUsers();
+        }
+
+        function getApiUrl() {
+            const user = document.getElementById('ghUser').value;
+            const repo = document.getElementById('ghRepo').value;
+            const path = document.getElementById('ghPath').value;
+            return `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+        }
+
+        function calculateExpiryDate(days) {
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + parseInt(days));
+
+            const day = String(targetDate.getDate()).padStart(2, '0');
+            const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+            const year = targetDate.getFullYear();
+
+            return `${day}-${month}-${year}`;
+        }
+
+        function getDaysLeft(expiryStr) {
+            try {
+                const [day, month, year] = expiryStr.split('-');
+                const expiryDate = new Date(year, month - 1, day);
+                const diffTime = expiryDate - new Date();
+                return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            } catch {
+                return null;
+            }
+        }
+
+        async function fetchUsers(silent = false) {
+            const token = document.getElementById('ghToken').value.trim();
+            if (!token) return openSettingsModal(false);
+
+            document.getElementById('loading').style.display = 'block';
+            try {
+                const response = await fetch(getApiUrl(), {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+
+                if (!response.ok) throw new Error("ارتباط ناموفق با گیت‌هاب");
+
+                const data = await response.json();
+                currentSha = data.sha;
+                
+                const decodedContent = decodeURIComponent(escape(atob(data.content)));
+                usersList = JSON.parse(decodedContent || "[]");
+
+                renderData();
+                updateStats();
+                if (!silent) showToast('اطلاعات همگام‌سازی شد', 'success');
+            } catch (err) {
+                showToast(err.message, 'danger');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function updateStats() {
+            let active = 0, expired = 0;
+            usersList.forEach(u => {
+                const days = getDaysLeft(u.expirydate);
+                if (days !== null && days >= 0) active++;
+                else expired++;
+            });
+
+            document.getElementById('statTotal').innerText = usersList.length + disabledUsersList.length;
+            document.getElementById('statActive').innerText = active;
+            document.getElementById('statExpired').innerText = expired + disabledUsersList.length;
+        }
+
+        function renderData(list = usersList) {
+            const tbody = document.getElementById('userTableBody');
+            const cardsContainer = document.getElementById('userCardsBody');
+            
+            tbody.innerHTML = "";
+            cardsContainer.innerHTML = "";
+
+            const combinedList = [
+                ...list.map(u => ({ ...u, isDisabled: false })),
+                ...disabledUsersList.map(u => ({ ...u, isDisabled: true }))
+            ];
+
+            if (combinedList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">هیچ کاربری یافت نشد</td></tr>`;
+                cardsContainer.innerHTML = `<div style="text-align:center; color:#888; padding:15px;">هیچ کاربری یافت نشد</div>`;
+                return;
+            }
+
+            combinedList.forEach((u) => {
+                const days = getDaysLeft(u.expirydate);
+                const isActive = !u.isDisabled && days !== null && days >= 0;
+
+                let statusText = isActive ? `${days} روز باقی‌مانده` : "منقضی شده";
+                let badgeClass = isActive ? 'badge-active' : 'badge-expired';
+
+                if (u.isDisabled) {
+                    statusText = "غیرفعال موقت";
+                    badgeClass = 'badge-disabled';
+                }
+
+                // سطر دسکتاپ
+                const tr = document.createElement('tr');
+                if (u.isDisabled) tr.style.opacity = '0.5';
+                tr.innerHTML = `
+                    <td><code>${u.device_id || '-'}</code></td>
+                    <td><b>${u.key}</b></td>
+                    <td>${u.expirydate}</td>
+                    <td>${u.Allowoffline ? 'بله' : 'خیر'}</td>
+                    <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                    <td>
+                        ${u.isDisabled ? 
+                            `<button class="btn-tbl" onclick="toggleDisableUser('${u.key}', false)" style="color:var(--success);" title="فعال‌سازی"><i class="fa-solid fa-power-off"></i></button>` :
+                            `<button class="btn-tbl" onclick="toggleDisableUser('${u.key}', true)" style="color:var(--warning);" title="غیرفعال‌سازی"><i class="fa-solid fa-pause"></i></button>`
+                        }
+                        <button class="btn-tbl" onclick="openEditDialog('${u.key}')" style="color:var(--primary);"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-tbl" onclick="deleteUser('${u.key}')" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // کارت موبایل
+                const card = document.createElement('div');
+                card.className = `user-card ${u.isDisabled ? 'disabled-user' : ''}`;
+                card.innerHTML = `
+                    <div class="user-card-header">
+                        <span style="font-weight:bold; color:var(--primary);">${u.key}</span>
+                        <span class="badge ${badgeClass}">${statusText}</span>
+                    </div>
+                    <div class="user-card-body">
+                        <span>شناسه: <b>${u.device_id || '-'}</b></span>
+                        <span>انقضا: <b>${u.expirydate}</b></span>
+                        <span>آفلاین: <b>${u.Allowoffline ? 'بله' : 'خیر'}</b></span>
+                    </div>
+                    <div class="user-card-actions">
+                        ${u.isDisabled ? 
+                            `<button class="btn-tbl" onclick="toggleDisableUser('${u.key}', false)" style="color:var(--success);"><i class="fa-solid fa-power-off"></i> فعال‌سازی</button>` :
+                            `<button class="btn-tbl" onclick="toggleDisableUser('${u.key}', true)" style="color:var(--warning);"><i class="fa-solid fa-pause"></i> غیرفعال موقت</button>`
+                        }
+                        <button class="btn-tbl" onclick="openEditDialog('${u.key}')" style="color:var(--primary);"><i class="fa-solid fa-pen"></i> ویرایش</button>
+                        <button class="btn-tbl" onclick="deleteUser('${u.key}')" style="color:var(--danger);"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        /* --- باز کردن دیالوگ ویرایش --- */
+        function openEditDialog(key) {
+            const u = usersList.find(item => item.key === key) || disabledUsersList.find(item => item.key === key);
+            if (!u) return;
+
+            document.getElementById('editKeyOriginal').value = u.key;
+            document.getElementById('currUserKey').innerText = u.key || '-';
+            
+            const daysLeft = getDaysLeft(u.expirydate);
+            document.getElementById('currDaysLeft').innerText = daysLeft !== null ? daysLeft + " روز" : "منقضی";
+            document.getElementById('currAllowOffline').innerText = u.Allowoffline ? "بله" : "خیر";
+
+            // ریست کردن فیلدها
+            document.getElementById('newUserKey').value = "";
+            document.getElementById('newDaysCount').value = "";
+            document.getElementById('newAllowOffline').value = "";
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        /* --- تایید و ذخیره تغییرات دیالوگ ویرایش --- */
+        async function saveEditDialog() {
+            const origKey = document.getElementById('editKeyOriginal').value;
+            let targetList = usersList;
+            let index = targetList.findIndex(u => u.key === origKey);
+
+            if (index === -1) {
+                targetList = disabledUsersList;
+                index = targetList.findIndex(u => u.key === origKey);
+            }
+
+            if (index === -1) return;
+
+            const u = targetList[index];
+
+            const newUserKey = document.getElementById('newUserKey').value.trim();
+            const newDays = document.getElementById('newDaysCount').value.trim();
+            const newOffline = document.getElementById('newAllowOffline').value;
+
+            // اعمال فقط اگر فیلد تغییر کرده باشد
+            if (newUserKey) u.key = newUserKey;
+            if (newDays) u.expirydate = calculateExpiryDate(newDays);
+            if (newOffline !== "") u.Allowoffline = (newOffline === "true");
+
+            closeEditModal();
+
+            if (targetList === disabledUsersList) {
+                localStorage.setItem('disabled_users', JSON.stringify(disabledUsersList));
+                renderData();
+                showToast('تغییرات کاربر ذخیره شد');
+            } else {
+                const success = await pushToGithub(`Edit user ${u.key}`);
+                if (success) showToast('تغییرات با موفقیت تایید شد');
+            }
+        }
+
+        async function toggleDisableUser(key, disable) {
+            if (disable) {
+                const targetIdx = usersList.findIndex(u => u.key === key);
+                if (targetIdx !== -1) {
+                    const disabledUser = usersList.splice(targetIdx, 1)[0];
+                    disabledUsersList.push(disabledUser);
+                }
+            } else {
+                const targetIdx = disabledUsersList.findIndex(u => u.key === key);
+                if (targetIdx !== -1) {
+                    const restoredUser = disabledUsersList.splice(targetIdx, 1)[0];
+                    usersList.push(restoredUser);
+                }
+            }
+
+            localStorage.setItem('disabled_users', JSON.stringify(disabledUsersList));
+            const success = await pushToGithub(disable ? `Disable ${key}` : `Enable ${key}`);
+            if (success) showToast(disable ? 'کاربر موقتاً غیرفعال شد' : 'کاربر دوباره فعال شد');
+        }
+
+        function filterUsers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = usersList.filter(u => 
+                (u.key && u.key.toLowerCase().includes(query)) ||
+                (u.device_id && u.device_id.toLowerCase().includes(query))
+            );
+            renderData(filtered);
+        }
+
+        async function saveUser() {
+            const token = document.getElementById('ghToken').value.trim();
+            if (!token) return openSettingsModal(false);
+
+            const deviceId = document.getElementById('deviceId').value.trim();
+            const key = document.getElementById('userKey').value.trim();
+            const daysCount = document.getElementById('daysCount').value.trim();
+            const allowOffline = document.getElementById('allowOffline').value === "true";
+
+            if (!key || !daysCount || !deviceId) return showToast('تمام فیلدها را پر کنید', 'danger');
+
+            const expirydate = calculateExpiryDate(daysCount);
+            const userData = { device_id: deviceId, key: key, expirydate: expirydate, Allowoffline: allowOffline };
+
+            usersList.push(userData);
+
+            const success = await pushToGithub(`Add ${key}`);
+            if (success) {
+                showToast('کاربر جدید با موفقیت اضافه شد', 'success');
+                document.getElementById('deviceId').value = '';
+                document.getElementById('userKey').value = '';
+                document.getElementById('daysCount').value = '';
+            }
+        }
+
+        async function deleteUser(key) {
+            if (!confirm('آیا از حذف کامل اطمینان دارید؟')) return;
+
+            usersList = usersList.filter(u => u.key !== key);
+            disabledUsersList = disabledUsersList.filter(u => u.key !== key);
+            localStorage.setItem('disabled_users', JSON.stringify(disabledUsersList));
+
+            const success = await pushToGithub(`Delete ${key}`);
+            if (success) showToast('کاربر حذف شد', 'success');
+        }
+
+        async function pushToGithub(commitMessage) {
+            const token = document.getElementById('ghToken').value.trim();
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const jsonString = JSON.stringify(usersList, null, 4);
+                const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+
+                const response = await fetch(getApiUrl(), {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: commitMessage,
+                        content: encodedContent,
+                        sha: currentSha
+                    })
+                });
+
+                if (!response.ok) throw new Error("خطا در همگام‌سازی با گیت‌هاب");
+
+                const resData = await response.json();
+                currentSha = resData.content.sha;
+                renderData();
+                updateStats();
+                return true;
+            } catch (err) {
+                showToast(err.message, 'danger');
+                return false;
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
